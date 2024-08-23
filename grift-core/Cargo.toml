@@ -1,0 +1,9 @@
+[package]
+name = "grift-core"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+git2 = { workspace = true }
+sqlx = { workspace = true }
+tokio = { workspace = true }

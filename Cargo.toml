@@ -1,0 +1,20 @@
+[workspace]
+resolver = "2"
+members = [
+    "grift-core",
+    "grift-cli",
+    "grift-daemon",
+]
+
+[workspace.package]
+version = "0.0.1"
+authors = ["David R. Morrison"]
+license-file = "LICENSE"
+readme = "README.md"
+edition = "2021"
+
+[workspace.dependencies]
+clap = "4.5.16"
+git2 = "0.19.0"
+sqlx = "0.8.0"
+tokio = "1.39.3"
