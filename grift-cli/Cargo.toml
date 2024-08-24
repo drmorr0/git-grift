@@ -1,7 +1,11 @@
 [package]
-name = "grift-cli"
-version = "0.0.0"
-edition = "2021"
+name = "git-grift"
+version.workspace = true
+edition.workspace = true
 
 [dependencies]
 clap = { workspace = true }
+clap_complete = { workspace = true }
+dirs = { workspace = true }
+eyre = { workspace = true }
+grift-core = { workspace = true }

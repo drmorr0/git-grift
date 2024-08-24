@@ -1,9 +1,10 @@
 [package]
 name = "grift-core"
-version = "0.0.0"
-edition = "2021"
+version.workspace = true
+edition.workspace = true
 
 [dependencies]
+eyre = { workspace = true }
 git2 = { workspace = true }
 sqlx = { workspace = true }
 tokio = { workspace = true }
