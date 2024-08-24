@@ -17,9 +17,10 @@ edition = "2021"
 grift-core.path = "grift-core"
 
 clap = { version = "4.5.16", features = ["cargo", "derive", "string"] }
-git2 = "0.19.0"
-sqlx = "0.8.0"
-tokio = "1.39.3"
 clap_complete = "4.5.23"
-eyre = "0.6.12"
 dirs = "5.0.1"
+eyre = "0.6.12"
+git2 = "0.19.0"
+octocrab = "0.39.0"
+sqlx = "0.8.0"
+tokio = { version = "1.39.3", features = ["full"] }

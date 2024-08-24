@@ -1,5 +1,5 @@
 [package]
-name = "git-grift"
+name = "grift"
 version.workspace = true
 edition.workspace = true
 
@@ -8,4 +8,6 @@ clap = { workspace = true }
 clap_complete = { workspace = true }
 dirs = { workspace = true }
 eyre = { workspace = true }
+git2 = { workspace = true }
 grift-core = { workspace = true }
+tokio = { workspace = true }

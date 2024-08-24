@@ -91,7 +91,7 @@ fn print_extra_info(shell: &Shell, path: &Path) {
     }
 }
 
-pub fn cmd(args: &Args, mut cmd: clap::Command) -> Empty {
+pub fn cmd(args: Args, mut cmd: clap::Command) -> Empty {
     let (mut out, maybe_path): (Box<dyn Write>, Option<PathBuf>) = if args.stdout {
         (Box::new(io::stdout()), None)
     } else {
