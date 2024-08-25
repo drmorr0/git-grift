@@ -7,7 +7,9 @@ const DEFAULT_BRANCH_KEY: &str = "griftDefaultBranch";
 pub fn expand_alias(mut args: Vec<String>, repo: &Repository) -> eyre::Result<Vec<String>> {
     let maybe_alias = &args[0];
     if let Ok(alias_value) = repo.config()?.snapshot()?.get_str(&format!("alias.{maybe_alias}")) {
-        let mut expanded_alias: Vec<String> = alias_value.split(" ").map(|s| s.into()).collect();
+        let mut expanded_alias: Vec<String> =
+            alias_value.split(" ").skip_while(|s| *s == "!git").map(|s| s.into()).collect();
+
         expanded_alias.extend_from_slice(&args[1..]);
         args = expanded_alias;
     }

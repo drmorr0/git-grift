@@ -47,10 +47,9 @@ enum GriftSubcommand {
 }
 
 async fn execute() -> Empty {
-    let args = GriftRoot::parse();
     let repo = Repository::discover(".")?;
 
-    match args.subcommand {
+    match GriftRoot::parse().subcommand {
         GriftSubcommand::Completions(args) => completions::cmd(args, GriftRoot::command()),
         GriftSubcommand::Init => init::cmd(&repo).await,
         GriftSubcommand::Version => {
