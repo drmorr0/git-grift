@@ -2,7 +2,11 @@ mod args;
 mod completions;
 mod init;
 
-use std::io::Write;
+use std::io::{
+    stderr,
+    stdout,
+    Write,
+};
 use std::process::{
     exit,
     Command,
@@ -14,6 +18,7 @@ use clap::{
     Parser,
     Subcommand,
 };
+use colored::*;
 use git2::Repository;
 use grift_core::prelude::*;
 
@@ -41,14 +46,13 @@ enum GriftSubcommand {
     GitCommand(Vec<String>),
 }
 
-#[tokio::main]
-async fn main() -> Empty {
+async fn execute() -> Empty {
     let args = GriftRoot::parse();
     let repo = Repository::discover(".")?;
 
     match args.subcommand {
         GriftSubcommand::Completions(args) => completions::cmd(args, GriftRoot::command()),
-        GriftSubcommand::Init => init::cmd(),
+        GriftSubcommand::Init => init::cmd(&repo).await,
         GriftSubcommand::Version => {
             println!("git-grift {}", crate_version!());
             Ok(())
@@ -61,9 +65,16 @@ async fn main() -> Empty {
             // the right thing here, but meh, that sounds like work.
             let output = Command::new("git").arg("-c").arg("color.ui=always").args(&args).output()?;
             println!("Executing `git {}`", args.join(" "));
-            std::io::stdout().write_all(&output.stdout)?;
-            std::io::stderr().write_all(&output.stderr)?;
+            stdout().write_all(&output.stdout)?;
+            stderr().write_all(&output.stderr)?;
             exit(output.status.code().expect("subprocess terminated by signal"));
         },
+    }
+}
+
+#[tokio::main]
+async fn main() {
+    if let Err(e) = execute().await {
+        println!("{}\n\n  {e}\n\n{}", "The following error occurred:".red(), "Have you run `grift init`?".red());
     }
 }

@@ -6,6 +6,7 @@ edition.workspace = true
 [dependencies]
 clap = { workspace = true }
 clap_complete = { workspace = true }
+colored = { workspace = true }
 dirs = { workspace = true }
 eyre = { workspace = true }
 git2 = { workspace = true }

@@ -1,9 +1,9 @@
 [workspace]
 resolver = "2"
 members = [
-    "grift-core",
-    "grift-cli",
     "grift-daemon",
+    "grift-cli",
+    "grift-core",
 ]
 
 [workspace.package]
@@ -18,9 +18,11 @@ grift-core.path = "grift-core"
 
 clap = { version = "4.5.16", features = ["cargo", "derive", "string"] }
 clap_complete = "4.5.23"
+colored = "2.1.0"
 dirs = "5.0.1"
 eyre = "0.6.12"
 git2 = "0.19.0"
 octocrab = "0.39.0"
+regex = "1.10.6"
 sqlx = "0.8.0"
 tokio = { version = "1.39.3", features = ["full"] }
