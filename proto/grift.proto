@@ -1,0 +1,8 @@
+syntax = "proto3";
+package grift;
+
+import "init_repo.proto";
+
+service GriftService {
+    rpc InitRepo(InitRepoRequest) returns (InitRepoResponse);
+}

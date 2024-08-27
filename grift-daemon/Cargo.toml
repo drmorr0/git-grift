@@ -1,6 +1,13 @@
 [package]
-name = "grift-daemon"
+name = "griftd"
 version.workspace = true
 edition.workspace = true
 
 [dependencies]
+clap = { workspace = true}
+grift-core = { workspace = true }
+tokio = { workspace = true }
+tokio-util = { workspace = true }
+tonic = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }

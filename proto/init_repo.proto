@@ -1,0 +1,11 @@
+syntax = "proto3";
+package grift;
+
+message InitRepoRequest {
+    string repo_path = 1;
+}
+
+message InitRepoResponse {
+    bool success = 1;
+    string msg = 2;
+}

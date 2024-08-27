@@ -12,3 +12,4 @@ eyre = { workspace = true }
 git2 = { workspace = true }
 grift-core = { workspace = true }
 tokio = { workspace = true }
+tonic = { workspace = true }
