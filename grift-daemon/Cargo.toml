@@ -1,11 +1,18 @@
 [package]
-name = "griftd"
+name = "grift-daemon"
 version.workspace = true
 edition.workspace = true
 
+[[bin]]
+name = "griftd"
+path = "src/main.rs"
+
 [dependencies]
-clap = { workspace = true}
+clap = { workspace = true }
+color-eyre = { workspace = true }
+eyre = { workspace = true }
 grift-core = { workspace = true }
+rusqlite = { workspace = true }
 tokio = { workspace = true }
 tokio-util = { workspace = true }
 tonic = { workspace = true }

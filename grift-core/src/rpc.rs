@@ -1,4 +1,3 @@
-use std::env::temp_dir;
 use std::fs;
 use std::path::PathBuf;
 
@@ -16,7 +15,6 @@ use tonic::transport::{
 };
 use tower::service_fn;
 use tracing::*;
-use users::get_current_uid;
 
 use crate::prelude::*;
 
@@ -33,10 +31,10 @@ impl GriftClient {
         // without a valid URL so I'm just gonna set it to example.com I guess
         let channel = Endpoint::try_from("http://example.com")?
             .connect_with_connector(service_fn(|_| async {
-                let path = grift_socket();
+                let path = grift_socket()?;
 
                 // Throw away the URI and connect to a UDS
-                Ok::<_, std::io::Error>(TokioIo::new(UnixStream::connect(path).await?))
+                Ok::<_, eyre::Error>(TokioIo::new(UnixStream::connect(path).await?))
             }))
             .await?;
 
@@ -51,7 +49,7 @@ pub struct GriftServer<Svc: GriftService + Clone> {
 
 impl<Svc: GriftService + Clone> GriftServer<Svc> {
     pub fn build(svc: Svc) -> eyre::Result<GriftServer<Svc>> {
-        let socket_path = grift_socket();
+        let socket_path = grift_socket()?;
         Ok(GriftServer { socket_path, svc })
     }
 
@@ -82,9 +80,6 @@ impl<Svc: GriftService + Clone> Drop for GriftServer<Svc> {
     }
 }
 
-fn grift_socket() -> PathBuf {
-    let mut socket_file = temp_dir();
-    socket_file.push(format!("griftd-{}.sock", get_current_uid()));
-
-    socket_file
+fn grift_socket() -> eyre::Result<PathBuf> {
+    Ok(XDG_DIRS.place_runtime_file("griftd.sock")?)
 }

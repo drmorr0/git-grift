@@ -4,6 +4,7 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
+color-eyre = { workspace = true }
 eyre = { workspace = true }
 futures = { workspace = true }
 git2 = { workspace = true }
@@ -11,14 +12,13 @@ hyper-util = { workspace = true }
 octocrab = { workspace = true }
 prost = { workspace = true }
 regex = { workspace = true }
-sqlx = { workspace = true }
 tokio = { workspace = true }
 tokio-stream = { workspace = true }
 tokio-util = { workspace = true }
 tonic = { workspace = true }
 tower = { workspace = true }
 tracing = { workspace = true }
-users = { workspace = true }
+xdg = { workspace = true }
 
 [build-dependencies]
 eyre = { workspace = true }

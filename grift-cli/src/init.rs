@@ -5,7 +5,7 @@ use std::io::{
 
 use colored::*;
 use git2::Repository;
-use grift_core::config::store_default_branch_for;
+use grift_core::git_config::store_default_branch_for;
 use grift_core::github::lookup_default_branch;
 use grift_core::prelude::*;
 use grift_core::rpc::GriftClient;

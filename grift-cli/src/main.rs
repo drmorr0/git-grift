@@ -18,7 +18,6 @@ use clap::{
     Parser,
     Subcommand,
 };
-use colored::*;
 use git2::Repository;
 use grift_core::prelude::*;
 
@@ -46,7 +45,10 @@ enum GriftSubcommand {
     GitCommand(Vec<String>),
 }
 
-async fn execute() -> Empty {
+#[tokio::main]
+async fn main() -> Empty {
+    color_eyre::install()?;
+
     let repo = Repository::discover(".")?;
 
     match GriftRoot::parse().subcommand {
@@ -68,12 +70,5 @@ async fn execute() -> Empty {
             stderr().write_all(&output.stderr)?;
             exit(output.status.code().expect("subprocess terminated by signal"));
         },
-    }
-}
-
-#[tokio::main]
-async fn main() {
-    if let Err(e) = execute().await {
-        println!("{}\n\n  {e}\n\n{}", "The following error occurred:".red(), "Have you run `grift init`?".red());
     }
 }

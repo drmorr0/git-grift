@@ -1,15 +1,16 @@
+mod db;
+mod grifter;
+
 use clap::Parser;
 use grift_core::prelude::*;
 use grift_core::rpc::GriftServer;
 use tokio::signal;
 use tokio_util::sync::CancellationToken;
-use tonic::{
-    Request,
-    Response,
-    Status,
-};
 use tracing::*;
 use tracing_subscriber::fmt::format::FmtSpan;
+
+use crate::db::GriftDB;
+use crate::grifter::Grifter;
 
 #[derive(Debug, Parser)]
 #[command(about, version)]
@@ -29,23 +30,10 @@ fn setup_logging(env_filter: &str) {
         .init();
 }
 
-#[derive(Clone)]
-struct Grifter {}
-
-#[tonic::async_trait]
-impl GriftService for Grifter {
-    async fn init_repo(&self, req: Request<InitRepoRequest>) -> Result<Response<InitRepoResponse>, Status> {
-        let resp = InitRepoResponse {
-            success: true,
-            msg: format!("repo at {} initialized", req.into_inner().repo_path),
-        };
-        Ok(Response::new(resp))
-    }
-}
-
 #[instrument(ret, err)]
 async fn run(args: Args) -> Empty {
-    let server = GriftServer::build(Grifter {})?;
+    let db = GriftDB::open()?;
+    let server = GriftServer::build(Grifter::new(db))?;
     let cancel = CancellationToken::new();
 
     tokio::select! {
@@ -58,6 +46,7 @@ async fn run(args: Args) -> Empty {
 
 #[tokio::main]
 async fn main() -> Empty {
+    color_eyre::install()?;
     let args = Args::parse();
     setup_logging(&args.verbosity);
     run(args).await

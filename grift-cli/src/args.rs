@@ -1,5 +1,5 @@
 use git2::Repository;
-use grift_core::config::{
+use grift_core::git_config::{
     expand_alias,
     fetch_default_branch_for,
 };
