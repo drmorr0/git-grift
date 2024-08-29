@@ -7,7 +7,11 @@ use grift_core::prelude::*;
 use rusqlite::Connection;
 use tracing::*;
 
+use crate::errors::*;
+
 const TRACKED_REPOS_TABLE: &str = "tracked_repos";
+
+const SQLITE_CONSTRAINT_UNIQUE: i32 = 2067;
 
 #[derive(Clone)]
 pub struct GriftDB {
@@ -40,11 +44,15 @@ impl GriftDB {
         })
     }
 
-    pub fn track_repo(&self, repo_path: &str) -> Empty {
+    pub fn track_repo(&self, repo_path: &str) -> Result<(), GriftdError> {
         self.conn
             .lock()
             .unwrap()
-            .execute(&format!("INSERT INTO {TRACKED_REPOS_TABLE} (path) VALUES (?1)"), (repo_path,))?;
+            .execute(&format!("INSERT INTO {TRACKED_REPOS_TABLE} (path) VALUES (?1)"), (repo_path,))
+            .map_err(|e| match e.sqlite_error().map_or(-1, |sqle| sqle.extended_code) {
+                SQLITE_CONSTRAINT_UNIQUE => GriftdError::AlreadyInitialized(repo_path.into()),
+                _ => GriftdError::Unknown,
+            })?;
 
         Ok(())
     }

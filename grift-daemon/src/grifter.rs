@@ -10,6 +10,7 @@ use tracing::*;
 
 use crate::db::GriftDB;
 
+
 #[derive(Clone)]
 pub struct Grifter {
     db: GriftDB,
@@ -33,16 +34,8 @@ impl GriftService for Grifter {
     #[allow(clippy::blocks_in_conditions)] // TODO - remove this once we're on Rust 1.81
     async fn init_repo(&self, req: Request<InitRepoRequest>) -> Result<Response<InitRepoResponse>, Status> {
         let repo_path = req.into_inner().repo_path;
-        let mut resp = InitRepoResponse {
-            success: true,
-            msg: format!("repo at {repo_path} initialized"),
-        };
+        self.db.track_repo(&repo_path).map_err(Status::from)?;
 
-        self.db.track_repo(&repo_path).unwrap_or_else(|e| {
-            resp.success = false;
-            resp.msg = format!("could not initialize repo: {e}");
-        });
-
-        Ok(Response::new(resp))
+        Ok(Response::new(InitRepoResponse {}))
     }
 }

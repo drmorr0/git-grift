@@ -666,6 +666,7 @@ dependencies = [
  "eyre",
  "grift-core",
  "rusqlite",
+ "thiserror",
  "tokio",
  "tokio-util",
  "tonic",

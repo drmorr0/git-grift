@@ -1,3 +1,7 @@
+use std::env::{
+    temp_dir,
+    var,
+};
 use std::fs;
 use std::path::PathBuf;
 
@@ -54,8 +58,6 @@ impl<Svc: GriftService + Clone> GriftServer<Svc> {
     }
 
     pub async fn run(&self, cancel: CancellationToken) -> Empty {
-        fs::create_dir_all(self.socket_path.parent().expect("could not find socket directory"))?;
-
         let listener = UnixListener::bind(self.socket_path.clone())?;
         let listener_stream = UnixListenerStream::new(listener);
 
@@ -81,5 +83,11 @@ impl<Svc: GriftService + Clone> Drop for GriftServer<Svc> {
 }
 
 fn grift_socket() -> eyre::Result<PathBuf> {
-    Ok(XDG_DIRS.place_runtime_file("griftd.sock")?)
+    if XDG_DIRS.has_runtime_directory() {
+        Ok(XDG_DIRS.place_runtime_file("griftd.sock")?)
+    } else {
+        let mut tmp_path = temp_dir();
+        tmp_path.push(format!("griftd-{}.sock", var("USER").unwrap_or("nobody".into())));
+        Ok(tmp_path)
+    }
 }

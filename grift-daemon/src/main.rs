@@ -1,4 +1,5 @@
 mod db;
+mod errors;
 mod grifter;
 
 use clap::Parser;
