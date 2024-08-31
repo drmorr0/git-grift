@@ -16,15 +16,15 @@ const SQLITE_CONSTRAINT_UNIQUE: i32 = 2067;
 #[derive(Clone)]
 pub struct GriftDB {
     conn: Arc<Mutex<Connection>>,
-    db_path: String,
+    db_path_str: String,
 }
 
 impl GriftDB {
     pub fn open() -> eyre::Result<GriftDB> {
         let db_path = XDG_DIRS.place_data_file("grift.sqlite")?;
-        let pp_db_path = db_path.to_string_lossy().to_string();
+        let db_path_str = db_path.to_string_lossy().to_string();
 
-        info!("Connecting to database at {pp_db_path}");
+        info!("Connecting to database at {db_path_str}");
 
         let conn = Connection::open(db_path)?;
         conn.execute(
@@ -38,10 +38,7 @@ impl GriftDB {
             (),
         )?;
 
-        Ok(GriftDB {
-            conn: Arc::new(Mutex::new(conn)),
-            db_path: pp_db_path,
-        })
+        Ok(GriftDB { conn: Arc::new(Mutex::new(conn)), db_path_str })
     }
 
     pub fn track_repo(&self, repo_path: &str) -> Result<(), GriftdError> {
@@ -57,7 +54,19 @@ impl GriftDB {
         Ok(())
     }
 
+    pub fn tracked_repos(&self) -> eyre::Result<Vec<String>> {
+        let repos: Result<Vec<String>, _> = self
+            .conn
+            .lock()
+            .unwrap()
+            .prepare(&format!("SELECT * FROM {TRACKED_REPOS_TABLE}"))?
+            .query_map([], |row| row.get("path"))?
+            .collect();
+
+        Ok(repos?)
+    }
+
     pub fn path(&self) -> &str {
-        &self.db_path
+        &self.db_path_str
     }
 }

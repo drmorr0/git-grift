@@ -21,11 +21,11 @@ pub async fn cmd(repo: &Repository) -> Empty {
 
     println!("{}", format!("Initializing grift in {repo_path}").blue());
 
-    print!("{}", "  🔎 Detecting default branch for 'origin'... ".green());
+    print!("{}", "  🔎 Detecting default branch for '{ORIGIN}'... ".green());
     stdout().flush()?;
 
-    let branch = lookup_default_branch(repo, "origin").await?;
-    store_default_branch_for(repo, "origin", &branch)?;
+    let branch = lookup_default_branch(repo, ORIGIN).await?;
+    store_default_branch_for(repo, ORIGIN, &branch)?;
     println!("{}", format!("found {branch}").green());
 
     println!("{}", format!("Writing config to {repo_path}config").blue());

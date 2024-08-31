@@ -664,6 +664,7 @@ dependencies = [
  "clap",
  "color-eyre",
  "eyre",
+ "git2",
  "grift-core",
  "rusqlite",
  "thiserror",

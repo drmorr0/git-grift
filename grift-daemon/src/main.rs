@@ -1,6 +1,7 @@
 mod db;
 mod errors;
 mod grifter;
+mod updater;
 
 use clap::Parser;
 use grift_core::prelude::*;
@@ -12,6 +13,7 @@ use tracing_subscriber::fmt::format::FmtSpan;
 
 use crate::db::GriftDB;
 use crate::grifter::Grifter;
+use crate::updater::GriftUpdater;
 
 #[derive(Debug, Parser)]
 #[command(about, version)]
@@ -34,7 +36,9 @@ fn setup_logging(env_filter: &str) {
 #[instrument(ret, err)]
 async fn run(args: Args) -> Empty {
     let db = GriftDB::open()?;
-    let server = GriftServer::build(Grifter::new(db))?;
+    let server = GriftServer::build(Grifter::new(db.clone()))?;
+    let updater = GriftUpdater::new(db.clone());
+    updater.start().await;
     let cancel = CancellationToken::new();
 
     tokio::select! {

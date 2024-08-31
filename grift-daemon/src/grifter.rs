@@ -10,7 +10,6 @@ use tracing::*;
 
 use crate::db::GriftDB;
 
-
 #[derive(Clone)]
 pub struct Grifter {
     db: GriftDB,

@@ -14,4 +14,6 @@ pub mod prelude {
 
     pub static XDG_DIRS: LazyLock<xdg::BaseDirectories> =
         LazyLock::new(|| xdg::BaseDirectories::with_prefix("grift").unwrap());
+
+    pub const ORIGIN: &str = "origin";
 }
